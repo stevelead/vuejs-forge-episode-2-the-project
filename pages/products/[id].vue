@@ -19,16 +19,19 @@ const description = computed(() =>
   product.value ? marked.parse(product.value?.fields?.description) : null
 );
 
+console.log(product);
 function handleAddToCart(product) {
+  useCartStore().addProduct(product, 1);
   useAlertsStore().success(product.fields.name + " added to cart");
 }
 </script>
+
 <template>
-  <div class="mt-10 max-w-6xl mx-auto">
+  <div class="max-w-6xl mx-auto mt-10">
     <div v-if="product">
       <div class="sm:flex">
         <img
-          class="mr-10 h-80 object-contain sm:w-1/3"
+          class="object-contain mr-10 h-80 sm:w-1/3"
           :src="product?.fields.image[0].fields?.file.url"
           :alt="product?.fields.image[0].fields?.file.description"
         />
@@ -38,13 +41,13 @@ function handleAddToCart(product) {
             <ProductPrice :price="product.fields.price" />
             <ProductHeat :heatLevel="product.fields.heatLevel" />
           </h2>
-          <div class="prose prose-sm">
+          <div class="prose-sm prose">
             <p>{{ product.fields.summary }}</p>
           </div>
 
           <hr class="my-4" />
 
-          <div class="prose mb-5" v-html="description" />
+          <div class="mb-5 prose" v-html="description" />
           <button class="btn btn-primary" @click="handleAddToCart(product)">
             Add to cart
           </button>
