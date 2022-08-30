@@ -1,9 +1,25 @@
 <script setup>
+import { debouncedWatch, refDebounced } from "@vueuse/core";
+const { fetchProducts } = useProductStore();
+const router = useRouter();
+const loading = ref(false);
+const loadingDebounced = refDebounced(loading, 500);
 const productStore = useProductStore();
 const filters = computed(() => productStore.filters);
+debouncedWatch(
+  filters,
+  async () => {
+    loading.value = true;
+    router.push({ query: filters.value });
+    await fetchProducts();
+    loading.value = false;
+  },
+  { deep: true, debounce: 200 }
+);
 </script>
 <template>
-  <div class="filters-wrapper flex gap-2 items-center">
+  <div class="flex items-center gap-2 filters-wrapper">
+    <AppSpinner style="transform: translateY(15px)" v-if="loadingDebounced" />
     <div class="form-control">
       <label class="label" for="search">
         <span class="label-text">Search</span>
@@ -15,7 +31,7 @@ const filters = computed(() => productStore.filters);
         class="input input-bordered"
       />
     </div>
-    <div class="form-control w-full max-w-xs">
+    <div class="w-full max-w-xs form-control">
       <label class="label" for="filterHeat">
         <span class="label-text">Filter By Heat</span>
       </label>
@@ -30,7 +46,7 @@ const filters = computed(() => productStore.filters);
         <option value="Hot">Hot</option>
       </select>
     </div>
-    <div class="form-control w-full max-w-xs">
+    <div class="w-full max-w-xs form-control">
       <label class="label" for="orderBy">
         <span class="label-text">Order by</span>
       </label>
