@@ -62,7 +62,7 @@ async function handleCheckout() {
                   </td>
 
                   <td>
-                    <input class="w-20 input input-bordered" type="number" value="1" />
+                    <input class="w-20 input input-bordered" type="number" v-model="product.count"/>
                   </td>
                   <th>
                     <NuxtLink
